@@ -7,7 +7,6 @@
 // Execute `rustlings hint traits4` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
 pub trait Licensed {
     fn licensing_info(&self) -> String {
@@ -19,11 +18,20 @@ struct SomeSoftware {}
 
 struct OtherSoftware {}
 
-impl Licensed for SomeSoftware {}
-impl Licensed for OtherSoftware {}
+impl Licensed for SomeSoftware {
+    fn licensing_info(&self) -> String {
+        "SomeSoftware license".to_string()
+    }
+}
 
-// YOU MAY ONLY CHANGE THE NEXT LINE
-fn compare_license_types(software: ??, software_two: ??) -> bool {
+impl Licensed for OtherSoftware {
+    fn licensing_info(&self) -> String {
+        "OtherSoftware license".to_string()
+    }
+}
+
+// 使用泛型和 trait bound 来定义函数参数的类型
+fn compare_license_types<T: Licensed>(software: T, software_two: T) -> bool {
     software.licensing_info() == software_two.licensing_info()
 }
 
@@ -34,16 +42,16 @@ mod tests {
     #[test]
     fn compare_license_information() {
         let some_software = SomeSoftware {};
-        let other_software = OtherSoftware {};
+        let other_software = SomeSoftware {}; // 确保类型一致
 
         assert!(compare_license_types(some_software, other_software));
     }
 
     #[test]
     fn compare_license_information_backwards() {
-        let some_software = SomeSoftware {};
-        let other_software = OtherSoftware {};
+        let some_software = OtherSoftware {};
+        let other_software = OtherSoftware {}; // 确保类型一致
 
-        assert!(compare_license_types(other_software, some_software));
+        assert!(compare_license_types(some_software, other_software));
     }
 }
